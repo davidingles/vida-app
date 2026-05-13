@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información - Control de Vida</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .info-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 2px solid rgba(233, 69, 96, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-header h1 {
+            font-size: 1.8rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .btn-save {
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-back {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .btn-back:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-back" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i> Volver
+    </button>
+
+    <div class="info-container">
+        <div class="info-header">
+            <div class="info-icon" id="infoIcon">
+                <i class="fas fa-car"></i>
+            </div>
+            <h1 id="infoTitle">Información</h1>
+        </div>
+
+        <form id="infoForm">
+            <div class="form-grid" id="formFields"></div>
+            <button type="submit" class="btn-save">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        const subcategory = params.get('subcategory');
+
+        const fieldConfigs = {
+            vehiculo: {
+                coche: [
+                    { label: 'Marca', type: 'text', key: 'marca_coche', placeholder: 'Ej: Toyota' },
+                    { label: 'Modelo', type: 'text', key: 'modelo_coche', placeholder: 'Ej: Corolla' },
+                    { label: 'Matrícula', type: 'text', key: 'matricula_coche', placeholder: 'Ej: 1234ABC' },
+                    { label: 'Año', type: 'number', key: 'ano_coche', placeholder: 'Ej: 2020' },
+                    { label: 'Kilómetros', type: 'number', key: 'km_coche', placeholder: 'Ej: 50000' },
+                    { label: 'Color', type: 'text', key: 'color_coche', placeholder: 'Ej: Blanco' },
+                    { label: 'Combustible', type: 'select', key: 'combustible_coche', options: ['Gasolina', 'Diésel', 'Eléctrico', 'Híbrido'] },
+                    { label: 'Seguro', type: 'text', key: 'seguro_coche', placeholder: 'Nombre aseguradora' },
+                    { label: 'ITV', type: 'date', key: 'itv_coche' },
+                    { label: 'Última revisión', type: 'date', key: 'ultima_revision_coche' },
+                    { label: 'Notas', type: 'textarea', key: 'notas_coche', placeholder: 'Observaciones adicionales...' }
+                ],
+                mot: [
+                    { label: 'Marca', type: 'text', key: 'marca_moto', placeholder: 'Ej: Honda' },
+                    { label: 'Modelo', type: 'text', key: 'modelo_moto', placeholder: 'Ej: CBR 600' },
+                    { label: 'Matrícula', type: 'text', key: 'matricula_moto', placeholder: 'Ej: 1234ABC' },
+                    { label: 'Año', type: 'number', key: 'ano_moto', placeholder: 'Ej: 2019' },
+                    { label: 'Kilómetros', type: 'number', key: 'km_moto', placeholder: 'Ej: 20000' },
+                    { label: 'Cilindrada', type: 'text', key: 'cilindrada_moto', placeholder: 'Ej: 600cc' },
+                    { label: 'Tipo', type: 'select', key: 'tipo_moto', options: ['Scooter', 'Deportiva', 'Naked', 'Trail', 'Custom'] },
+                    { label: 'Seguro', type: 'text', key: 'seguro_moto', placeholder: 'Nombre aseguradora' },
+                    { label: 'ITV', type: 'date', key: 'itv_moto' },
+                    { label: 'Notas', type: 'textarea', key: 'notas_moto', placeholder: 'Observaciones adicionales...' }
+                ]
+            },
+            trabajo: {
+                devs: [
+                    { label: 'Lenguajes', type: 'text', key: 'lenguajes_devs', placeholder: 'Ej: JavaScript, Python' },
+                    { label: 'Framework', type: 'text', key: 'framework_devs', placeholder: 'Ej: React, Django' },
+                    { label: 'GitHub', type: 'text', key: 'github_devs', placeholder: 'Usuario de GitHub' },
+                    { label: 'Proyectos', type: 'textarea', key: 'proyectos_devs', placeholder: 'Lista de proyectos...' },
+                    { label: 'Skills', type: 'text', key: 'skills_devs', placeholder: 'Ej: Node.js, SQL' },
+                    { label: 'Notas', type: 'textarea', key: 'notas_devs', placeholder: 'Notas adicionales...' }
+                ],
+                portero: [
+                    { label: 'Edificio', type: 'text', key: 'edificio_portero', placeholder: 'Nombre del edificio' },
+                    { label: 'Dirección', type: 'text', key: 'direccion_portero', placeholder: 'Dirección del edificio' },
+                    { label: 'Horario', type: 'text', key: 'horario_portero', placeholder: 'Ej: 8:00 - 16:00' },
+                    { label: 'Número de pisos', type: 'number', key: 'pisos_portero', placeholder: 'Ej: 10' },
+                    { label: 'Número de vecinos', type: 'number', key: 'vecinos_portero', placeholder: 'Ej: 40' },
+                    { label: 'Servicios', type: 'textarea', key: 'servicios_portero', placeholder: 'Servicios que ofreces...' },
+                    { label: 'Notas', type: 'textarea', key: 'notas_portero', placeholder: 'Notas adicionales...' }
+                ],
+                auxiliar: [
+                    { label: 'Zona', type: 'text', key: 'zona_auxiliar', placeholder: 'Zona de trabajo' },
+                    { label: 'Horario', type: 'text', key: 'horario_auxiliar', placeholder: 'Ej: 9:00 - 14:00' },
+                    { label: 'Servicios', type: 'textarea', key: 'servicios_auxiliar', placeholder: 'Servicios que ofreces...' },
+                    { label: 'Clientes', type: 'number', key: 'clientes_auxiliar', placeholder: 'Número de clientes' },
+                    { label: 'Teléfono', type: 'tel', key: 'telefono_auxiliar', placeholder: 'Tu teléfono de contacto' },
+                    { label: 'Notas', type: 'textarea', key: 'notas_auxiliar', placeholder: 'Notas adicionales...' }
+                ]
+            },
+            casa: [
+                { label: 'Dirección', type: 'text', key: 'direccion_casa', placeholder: 'Dirección completa' },
+                { label: 'Metros cuadrados', type: 'number', key: 'metros_casa', placeholder: 'Ej: 120' },
+                { label: 'Habitaciones', type: 'number', key: 'habitaciones_casa', placeholder: 'Ej: 4' },
+                { label: 'Baños', type: 'number', key: 'banos_casa', placeholder: 'Ej: 2' },
+                { label: 'Propietario', type: 'text', key: 'propietario_casa', placeholder: 'Nombre del propietario' },
+                { label: 'Alquiler/Vivienda', type: 'select', key: 'tipo_casa', options: ['Alquiler', 'Propia', 'Compartida'] },
+                { label: 'Mes', type: 'number', key: 'mes_casa', placeholder: 'Mes de alquiler' },
+                { label: 'Servicios', type: 'textarea', key: 'servicios_casa', placeholder: 'Luz, agua, gas, internet...' },
+                { label: 'Notas', type: 'textarea', key: 'notas_casa', placeholder: 'Notas adicionales...' }
+            ],
+            religion: [
+                { label: 'Iglesia', type: 'text', key: 'iglesia', placeholder: 'Nombre de la iglesia' },
+                { label: 'Denominación', type: 'select', key: 'denominacion', options: ['Católica', 'Evangélica', 'Protestante', 'Ortodoxa', 'Otra'] },
+                { label: 'Pastor/Párroco', type: 'text', key: 'pastor', placeholder: 'Nombre del líder espiritual' },
+                { label: 'Día de culto', type: 'select', key: 'dia_culto', options: ['Domingo', 'Sábado', 'Otro'] },
+                { label: 'Grupo', type: 'text', key: 'grupo_religion', placeholder: 'Grupo o célula' },
+                { label: 'Notas', type: 'textarea', key: 'notas_religion', placeholder: 'Notas adicionales...' }
+            ],
+            gimnasio: [
+                { label: 'Gimnasio', type: 'text', key: 'gimnasio', placeholder: 'Nombre del gimnasio' },
+                { label: 'Cuota', type: 'number', key: 'cuota_gimnasio', placeholder: 'Precio mensual' },
+                { label: 'Horario', type: 'text', key: 'horario_gimnasio', placeholder: 'Horario habitual' },
+                { label: 'Rutina', type: 'textarea', key: 'rutina_gimnasio', placeholder: 'Tu rutina de entrenamiento...' },
+                { label: 'Objetivo', type: 'text', key: 'objetivo_gimnasio', placeholder: 'Ej: Ganar masa muscular' },
+                { label: 'Peso', type: 'number', key: 'peso_gimnasio', placeholder: 'Peso actual (kg)' },
+                { label: 'Altura', type: 'number', key: 'altura_gimnasio', placeholder: 'Altura (cm)' },
+                { label: 'Notas', type: 'textarea', key: 'notas_gimnasio', placeholder: 'Notas adicionales...' }
+            ],
+            familia: [
+                { label: 'Miembros', type: 'textarea', key: 'miembros_familia', placeholder: 'Lista de familiares...' },
+                { label: 'Teléfono emergencias', type: 'tel', key: 'telefono_emergencias', placeholder: 'Teléfono de emergencias' },
+                { label: 'Fechas importantes', type: 'textarea', key: 'fechas_familia', placeholder: 'Cumpleaños, aniversarios...' },
+                { label: 'Notas', type: 'textarea', key: 'notas_familia', placeholder: 'Notas adicionales...' }
+            ],
+            bancos: [
+                { label: 'Banco', type: 'text', key: 'banco', placeholder: 'Nombre del banco' },
+                { label: 'Tipo de cuenta', type: 'select', key: 'tipo_cuenta', options: ['Corriente', 'Ahorro', 'Plazo fijo'] },
+                { label: 'IBAN', type: 'text', key: 'iban', placeholder: 'ES00 0000 0000 0000 0000' },
+                { label: 'Saldo', type: 'number', key: 'saldo', placeholder: 'Saldo actual' },
+                { label: 'Tarjetas', type: 'textarea', key: 'tarjetas', placeholder: 'Lista de tarjetas...' },
+                { label: 'Préstamos', type: 'textarea', key: 'prestamos', placeholder: 'Préstamos activos...' },
+                { label: 'Notas', type: 'textarea', key: 'notas_bancos', placeholder: 'Notas adicionales...' }
+            ],
+            devs: [
+                { label: 'Lenguajes', type: 'text', key: 'lenguajes', placeholder: 'Ej: JavaScript, Python' },
+                { label: 'Framework', type: 'text', key: 'framework', placeholder: 'Ej: React, Django' },
+                { label: 'GitHub', type: 'text', key: 'github', placeholder: 'Usuario de GitHub' },
+                { label: 'Proyectos', type: 'textarea', key: 'proyectos', placeholder: 'Lista de proyectos...' },
+                { label: 'Skills', type: 'text', key: 'skills', placeholder: 'Ej: Node.js, SQL' },
+                { label: 'Notas', type: 'textarea', key: 'notas', placeholder: 'Notas adicionales...' }
+            ]
+        };
+
+        const icons = {
+            casa: 'fa-home',
+            vehiculo: 'fa-car',
+            trabajo: 'fa-briefcase',
+            religion: 'fa-pray',
+            gimnasio: 'fa-dumbbell',
+            familia: 'fa-users',
+            bancos: 'fa-university',
+            devs: 'fa-code',
+            coche: 'fa-car',
+            mot: 'fa-motorcycle',
+            portero: 'fa-door-open',
+            auxiliar: 'fa-hands-helping'
+        };
+
+        let fields = [];
+        
+        if (subcategory && fieldConfigs[category] && fieldConfigs[category][subcategory]) {
+            fields = fieldConfigs[category][subcategory];
+            document.getElementById('infoTitle').textContent = subcategory.charAt(0).toUpperCase() + subcategory.slice(1);
+            document.getElementById('infoIcon').innerHTML = `<i class="fas ${icons[subcategory]}"></i>`;
+        } else if (fieldConfigs[category]) {
+            fields = fieldConfigs[category];
+            document.getElementById('infoTitle').textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            document.getElementById('infoIcon').innerHTML = `<i class="fas ${icons[category]}"></i>`;
+        } else {
+            document.getElementById('infoTitle').textContent = 'Información';
+        }
+
+        const formFields = document.getElementById('formFields');
+        
+        fields.forEach(field => {
+            const group = document.createElement('div');
+            group.className = 'form-group' + (field.type === 'textarea' ? ' full-width' : '');
+
+            const label = document.createElement('label');
+            label.textContent = field.label;
+            group.appendChild(label);
+
+            let input;
+            if (field.type === 'select') {
+                input = document.createElement('select');
+                input.name = field.key;
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Selecciona...';
+                input.appendChild(defaultOption);
+                field.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    input.appendChild(option);
+                });
+            } else if (field.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.name = field.key;
+                if (field.placeholder) input.placeholder = field.placeholder;
+            } else {
+                input = document.createElement('input');
+                input.type = field.type;
+                input.name = field.key;
+                if (field.placeholder) input.placeholder = field.placeholder;
+            }
+
+            group.appendChild(input);
+            formFields.appendChild(group);
+        });
+
+        document.getElementById('infoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            
+            const storageKey = 'info_' + category + (subcategory ? '_' + subcategory : '');
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            
+            alert('¡Información guardada correctamente!');
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

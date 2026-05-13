@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Vida</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1><i class="fas fa-user-clock"></i> Control de Vida</h1>
+            <p class="subtitle">Gestiona todos los aspectos de tu vida</p>
+        </header>
+
+        <main class="main-grid">
+            <button class="life-card" data-category="casa">
+                <div class="card-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span class="card-title">Casa</span>
+                <span class="card-desc">Hogar y familia</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 75%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="vehiculo">
+                <div class="card-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <span class="card-title">Vehículos</span>
+                <span class="card-desc">Coche y moto</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 60%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="trabajo">
+                <div class="card-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <span class="card-title">Trabajo</span>
+                <span class="card-desc">Carrera profesional</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 85%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="religion">
+                <div class="card-icon">
+                    <i class="fas fa-pray"></i>
+                </div>
+                <span class="card-title">Religión</span>
+                <span class="card-desc">Fe y espiritualidad</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 90%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="gimnasio">
+                <div class="card-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <span class="card-title">Gimnasio</span>
+                <span class="card-desc">Salud y fitness</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 45%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="familia">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="card-title">Familia</span>
+                <span class="card-desc">Familia y seres queridos</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 80%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="bancos">
+                <div class="card-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <span class="card-title">Bancos</span>
+                <span class="card-desc">Finanzas y cuentas</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 70%"></div>
+                </div>
+            </button>
+
+            <button class="life-card" data-category="devs">
+                <div class="card-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <span class="card-title">Devs</span>
+                <span class="card-desc">Desarrollo y tecnología</span>
+                <div class="card-progress">
+                    <div class="progress-bar" style="--width: 65%"></div>
+                </div>
+            </button>
+        </main>
+
+        <section class="content-panel" id="contentPanel">
+            <div class="panel-header">
+                <div class="panel-icon" id="panelIcon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h2 id="panelTitle">Casa</h2>
+            </div>
+            <div class="panel-content" id="panelContent"></div>
+        </section>
+
+        <footer class="footer">
+            <p>Mantén el balance en tu vida</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

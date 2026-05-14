@@ -9,6 +9,50 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Modal de documentos -->
+    <div class="modal-overlay" id="docModal">
+        <div class="modal-doc">
+            <div class="modal-doc-header">
+                <h2><i class="fas fa-folder-open"></i> Mis Documentos</h2>
+                <button class="modal-close" id="closeDocModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="doc-upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Haz clic o arrastra un archivo aquí</p>
+            </div>
+            <input type="file" id="fileInput" accept="*/*">
+            
+            <div class="doc-form">
+                <select id="docCategory">
+                    <option value="">Seleccionar categoría...</option>
+                    <option value="casa">Casa</option>
+                    <option value="vehiculo">Vehículos</option>
+                    <option value="trabajo">Trabajo</option>
+                    <option value="religion">Religión</option>
+                    <option value="gimnasio">Gimnasio</option>
+                    <option value="familia">Familia</option>
+                    <option value="bancos">Bancos</option>
+                    <option value="devs">Devs</option>
+                </select>
+                <button class="btn-upload" id="btnUpload" disabled>
+                    <i class="fas fa-upload"></i> Subir documento
+                </button>
+            </div>
+            
+            <div class="doc-list">
+                <h3><i class="fas fa-file-alt"></i> Archivos subidos</h3>
+                <div id="docListContainer"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <header class="header">
             <h1><i class="fas fa-user-clock"></i> Control de Vida</h1>
@@ -111,6 +155,11 @@
                     <i class="fas fa-home"></i>
                 </div>
                 <h2 id="panelTitle">Casa</h2>
+            </div>
+            <div class="panel-actions">
+                <button class="btn-save-info" id="docToggle" aria-label="Subir documentos">
+                    <i class="fas fa-folder-plus"></i> Subir documentos
+                </button>
             </div>
             <form id="addTaskForm" class="add-task-form">
                 <input type="text" id="newTaskInput" placeholder="Nueva tarea..." required>

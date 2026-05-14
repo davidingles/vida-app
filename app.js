@@ -1,5 +1,194 @@
 const API_URL = 'http://localhost:3000/api';
 
+// Controlador de theme día/noche
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+
+if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeToggle.querySelector('i').className = 'fas fa-sun';
+}
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme === 'light' ? 'light' : '');
+    localStorage.setItem('theme', newTheme);
+    
+    themeToggle.querySelector('i').className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+});
+
+// Controlador de documentos
+const docToggle = document.getElementById('docToggle');
+const docModal = document.getElementById('docModal');
+const closeDocModal = document.getElementById('closeDocModal');
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const docCategory = document.getElementById('docCategory');
+const btnUpload = document.getElementById('btnUpload');
+const docListContainer = document.getElementById('docListContainer');
+
+let selectedFile = null;
+
+docToggle.addEventListener('click', () => {
+    docModal.classList.add('active');
+    loadDocuments();
+});
+
+closeDocModal.addEventListener('click', () => {
+    docModal.classList.remove('active');
+});
+
+docModal.addEventListener('click', (e) => {
+    if (e.target === docModal) {
+        docModal.classList.remove('active');
+    }
+});
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'var(--accent)';
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.style.borderColor = 'rgba(233, 69, 96, 0.4)';
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'rgba(233, 69, 96, 0.4)';
+    if (e.dataTransfer.files.length) {
+        handleFileSelect(e.dataTransfer.files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) {
+        handleFileSelect(e.target.files[0]);
+    }
+});
+
+function handleFileSelect(file) {
+    selectedFile = file;
+    uploadArea.innerHTML = `<i class="fas fa-file"></i><p>${file.name}</p>`;
+    updateUploadButton();
+}
+
+docCategory.addEventListener('change', updateUploadButton);
+
+function updateUploadButton() {
+    btnUpload.disabled = !selectedFile || !docCategory.value;
+}
+
+btnUpload.addEventListener('click', async () => {
+    if (!selectedFile || !docCategory.value) return;
+    
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('category', docCategory.value);
+    
+    btnUpload.disabled = true;
+    btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+    
+    try {
+        const response = await fetch(`${API_URL}/documents`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            selectedFile = null;
+            fileInput.value = '';
+            docCategory.value = '';
+            uploadArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Haz clic o arrastra un archivo aquí</p>';
+            loadDocuments();
+            btnUpload.innerHTML = '<i class="fas fa-upload"></i> Subir documento';
+        } else {
+            alert('Error al subir el documento');
+            btnUpload.disabled = false;
+            btnUpload.innerHTML = '<i class="fas fa-upload"></i> Subir documento';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al subir el documento');
+        btnUpload.disabled = false;
+        btnUpload.innerHTML = '<i class="fas fa-upload"></i> Subir documento';
+    }
+});
+
+async function loadDocuments() {
+    try {
+        const response = await fetch(`${API_URL}/documents`);
+        const docs = await response.json();
+        
+        if (docs.length === 0) {
+            docListContainer.innerHTML = '<p style="color: var(--text-dim); text-align: center;">No hay documentos subidos</p>';
+            return;
+        }
+        
+        docListContainer.innerHTML = docs.map(doc => `
+            <div class="doc-item">
+                <div class="doc-icon">
+                    <i class="fas fa-file-${getFileIcon(doc.mimetype)}"></i>
+                </div>
+                <div class="doc-info">
+                    <div class="doc-name">${doc.originalname}</div>
+                    <div class="doc-date">${new Date(doc.created_at).toLocaleDateString()}</div>
+                </div>
+                <div class="doc-actions">
+                    <a class="btn-download" href="${doc.file_path}" download="${doc.originalname}" title="Descargar">
+                        <i class="fas fa-download"></i>
+                    </a>
+                    <button onclick="deleteDoc(${doc.id})" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading documents:', error);
+    }
+}
+
+function getFileIcon(mimetype) {
+    if (mimetype.includes('pdf')) return 'pdf';
+    if (mimetype.includes('image')) return 'image';
+    if (mimetype.includes('word') || mimetype.includes('document')) return 'word';
+    if (mimetype.includes('sheet') || mimetype.includes('excel')) return 'excel';
+    return 'alt';
+}
+
+window.downloadDoc = async function(id) {
+    try {
+        const response = await fetch(`${API_URL}/documents/${id}/download`);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading:', error);
+    }
+};
+
+window.deleteDoc = async function(id) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este documento?')) return;
+    
+    try {
+        await fetch(`${API_URL}/documents/${id}`, { method: 'DELETE' });
+        loadDocuments();
+    } catch (error) {
+        console.error('Error deleting:', error);
+    }
+};
+
 const categories = {
     casa: {
         title: 'Casa',

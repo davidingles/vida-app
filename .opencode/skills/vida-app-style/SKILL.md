@@ -9,7 +9,7 @@ description: Usar cuando se requiera aplicar el estilo visual del proyecto vida-
 
 ```css
 :root {
-    /* Colores principales */
+    /* Theme Noche (por defecto) */
     --primary: #1a1a2e;           /* Fondo oscuro base */
     --secondary: #16213e;         /* Tono secundario más claro */
     --accent: #e94560;            /* Rosa-rojo para acentos y CTAs */
@@ -25,7 +25,110 @@ description: Usar cuando se requiera aplicar el estilo visual del proyecto vida-
     /* Sombras */
     --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);              /* Sombra suave */
     --shadow-hover: 0 20px 60px rgba(233, 69, 96, 0.2);    /* Sombra hover con tinte rosa */
+
+    /* Fondo con elementos decorativos */
+    --bg-glow-1: rgba(233, 69, 96, 0.1);
+    --bg-glow-2: rgba(15, 52, 96, 0.2);
 }
+
+/* Theme Día - activar con data-theme="light" en HTML */
+[data-theme="light"] {
+    --primary: #f5f7fa;
+    --secondary: #e8ecf1;
+    --accent: #e94560;
+    --accent-secondary: #667eea;
+    --text-light: #2d3748;
+    --text-dim: #718096;
+    --card-bg: #ffffff;
+    --gradient-1: linear-gradient(135deg, #e94560, #667eea);
+    --gradient-2: linear-gradient(135deg, #667eea, #f5f7fa);
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 20px 60px rgba(233, 69, 96, 0.15);
+    --bg-glow-1: rgba(233, 69, 96, 0.08);
+    --bg-glow-2: rgba(102, 126, 234, 0.1);
+}
+```
+
+### Fondo Dinámico
+
+```css
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, var(--bg-glow-1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, var(--bg-glow-2) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+```
+
+### Botón de Cambio de Theme
+
+```css
+.theme-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--accent);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-hover);
+}
+
+[data-theme="light"] .theme-toggle i {
+    transform: rotate(180deg);
+}
+```
+
+### HTML del Botón
+
+```html
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <i class="fas fa-moon"></i>
+</button>
+```
+
+### JavaScript para el Toggle
+
+```javascript
+// Controlador de theme día/noche
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'dark';
+
+if (savedTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    themeToggle.querySelector('i').className = 'fas fa-sun';
+}
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    document.documentElement.setAttribute('data-theme', newTheme === 'light' ? 'light' : '');
+    localStorage.setItem('theme', newTheme);
+    
+    themeToggle.querySelector('i').className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+});
 ```
 
 ## Bordes y Radios
@@ -398,3 +501,98 @@ Cuando el usuario pida:
 - Crear formularios de entrada de datos
 
 Siempre usar las variables CSS definidas, los radios especificados, y seguir las convenciones de comentarios.
+
+## Sistema de Documentos
+
+### Botón de Subir Documentos
+
+```css
+.doc-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 5.5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--accent);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+```
+
+### HTML del Modal de Documentos
+
+```html
+<button class="doc-toggle" id="docToggle" aria-label="Subir documentos">
+    <i class="fas fa-folder-plus"></i>
+</button>
+
+<div class="modal-overlay" id="docModal">
+    <div class="modal-doc">
+        <div class="modal-doc-header">
+            <h2><i class="fas fa-folder-open"></i> Mis Documentos</h2>
+            <button class="modal-close" id="closeDocModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="doc-upload-area" id="uploadArea">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Haz clic o arrastra un archivo aquí</p>
+        </div>
+        <input type="file" id="fileInput" accept="*/*">
+        
+        <div class="doc-form">
+            <select id="docCategory">
+                <option value="">Seleccionar categoría...</option>
+                <option value="casa">Casa</option>
+                <option value="vehiculo">Vehículos</option>
+                <option value="trabajo">Trabajo</option>
+                <option value="religion">Religión</option>
+                <option value="gimnasio">Gimnasio</option>
+                <option value="familia">Familia</option>
+                <option value="bancos">Bancos</option>
+                <option value="devs">Devs</option>
+            </select>
+            <button class="btn-upload" id="btnUpload" disabled>
+                <i class="fas fa-upload"></i> Subir documento
+            </button>
+        </div>
+        
+        <div class="doc-list">
+            <h3><i class="fas fa-file-alt"></i> Archivos subidos</h3>
+            <div id="docListContainer"></div>
+        </div>
+    </div>
+</div>
+```
+
+### Tabla de Documentos en SQLite
+
+```sql
+CREATE TABLE IF NOT EXISTS documents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category TEXT,
+    subcategory TEXT,
+    filename TEXT NOT NULL,
+    originalname TEXT NOT NULL,
+    mimetype TEXT NOT NULL,
+    data BLOB NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Endpoints API
+
+- `GET /api/documents` - Listar documentos (soporta ?category=xxx&subcategory=xxx)
+- `POST /api/documents` - Subir documento (form-data: file, category, subcategory)
+- `GET /api/documents/:id/download` - Descargar documento
+- `DELETE /api/documents/:id` - Eliminar documento

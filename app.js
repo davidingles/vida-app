@@ -1,18 +1,14 @@
+const API_URL = 'http://localhost:3000/api';
+
 const categories = {
     casa: {
         title: 'Casa',
         icon: 'fa-home',
-        tasks: [
-            { id: 'c1', text: 'Limpiar la casa', completed: false },
-            { id: 'c2', text: 'Comprar groceries', completed: true },
-            { id: 'c3', text: 'Pagar servicios', completed: false },
-            { id: 'c4', text: 'Mantenimiento general', completed: false },
-            { id: 'c5', text: 'Organizar armario', completed: true }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '2/5',
-            'Próximo deber': 'Limpiar casa',
-            'Nivel orden': '75%'
+            'Tareas completadas': '0/0',
+            'Próximo deber': 'Sin tareas',
+            'Nivel orden': '0%'
         }
     },
     vehiculo: {
@@ -22,33 +18,21 @@ const categories = {
         coche: {
             title: 'Coche',
             icon: 'fa-car',
-            tasks: [
-                { id: 'vc1', text: 'Cambiar aceite', completed: false },
-                { id: 'vc2', text: 'Lavar el coche', completed: true },
-                { id: 'vc3', text: 'Revisar neumáticos', completed: false },
-                { id: 'vc4', text: 'Cambiar filtro aire', completed: false },
-                { id: 'vc5', text: 'Revisarfren os', completed: false }
-            ],
+            tasks: [],
             stats: {
-                'Tareas completadas': '1/5',
-                'Próximo deber': 'Cambiar aceite',
-                'Nivel mantenimiento': '60%'
+                'Tareas completadas': '0/0',
+                'Próximo deber': 'Sin tareas',
+                'Nivel mantenimiento': '0%'
             }
         },
         mot: {
             title: 'Moto',
             icon: 'fa-motorcycle',
-            tasks: [
-                { id: 'vm1', text: 'Cambiar aceite moto', completed: false },
-                { id: 'vm2', text: 'Lavar la moto', completed: true },
-                { id: 'vm3', text: 'Revisar cadena', completed: false },
-                { id: 'vm4', text: '票据 de la moto', completed: false },
-                { id: 'vm5', text: 'Revisar neumáticos', completed: false }
-            ],
+            tasks: [],
             stats: {
-                'Tareas completadas': '1/5',
-                'Próximo deber': 'Cambiar aceite',
-                'Nivel mantenimiento': '50%'
+                'Tareas completadas': '0/0',
+                'Próximo deber': 'Sin tareas',
+                'Nivel mantenimiento': '0%'
             }
         }
     },
@@ -59,144 +43,109 @@ const categories = {
         devs: {
             title: 'Devs',
             icon: 'fa-code',
-            tasks: [
-                { id: 'td1', text: 'Commit código', completed: true },
-                { id: 'td2', text: 'Revisar PRs', completed: false },
-                { id: 'td3', text: 'Actualizar dependencias', completed: true },
-                { id: 'td4', text: 'Hacer backup', completed: false },
-                { id: 'td5', text: 'Aprender nueva tecnología', completed: false }
-            ],
+            tasks: [],
             stats: {
-                'Tareas completadas': '2/5',
-                'Último commit': 'Hoy',
-                'Productividad': '65%'
+                'Tareas completadas': '0/0',
+                'Último commit': 'Sin datos',
+                'Productividad': '0%'
             }
         },
         portero: {
             title: 'Portero',
             icon: 'fa-door-open',
-            tasks: [
-                { id: 'tp1', text: 'Limpiar entrada', completed: true },
-                { id: 'tp2', text: 'Revisar cerraduras', completed: false },
-                { id: 'tp3', text: 'Controlar acceso', completed: true },
-                { id: 'tp4', text: 'Registrar visitas', completed: false },
-                { id: 'tp5', text: 'Mantener秩序', completed: false }
-            ],
+            tasks: [],
             stats: {
-                'Tareas completadas': '2/5',
-                'Último turno': 'Hoy',
-                'Eficiencia': '70%'
+                'Tareas completadas': '0/0',
+                'Último turno': 'Sin datos',
+                'Eficiencia': '0%'
             }
         },
         auxiliar: {
             title: 'Auxiliar',
             icon: 'fa-hands-helping',
-            tasks: [
-                { id: 'ta1', text: 'Ayudar vecinos', completed: true },
-                { id: 'ta2', text: 'Entregar correspondencia', completed: false },
-                { id: 'ta3', text: 'Reportar incidencias', completed: true },
-                { id: 'ta4', text: 'Gestionar reparaciones', completed: false },
-                { id: 'ta5', text: 'Coordinar servicios', completed: false }
-            ],
+            tasks: [],
             stats: {
-                'Tareas completadas': '2/5',
-                'Ayudas realizadas': '5',
-                'Satisfacción': '80%'
+                'Tareas completadas': '0/0',
+                'Ayudas realizadas': '0',
+                'Satisfacción': '0%'
             }
         }
     },
     religion: {
         title: 'Religión',
         icon: 'fa-pray',
-        tasks: [
-            { id: 'r1', text: 'Oración matutina', completed: true },
-            { id: 'r2', text: 'Leer la biblia', completed: true },
-            { id: 'r3', text: 'Asistir a misa', completed: true },
-            { id: 'r4', text: 'Meditación espiritual', completed: false },
-            { id: 'r5', text: 'Ayunar', completed: false }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '3/5',
-            'Última actividad': 'Misa domingo',
-            'Nivel fe': '90%'
+            'Tareas completadas': '0/0',
+            'Última actividad': 'Sin datos',
+            'Nivel fe': '0%'
         }
     },
     gimnasio: {
         title: 'Gimnasio',
         icon: 'fa-dumbbell',
-        tasks: [
-            { id: 'g1', text: 'Entreno de pecho', completed: true },
-            { id: 'g2', text: 'Cardio 30 min', completed: false },
-            { id: 'g3', text: 'Estiramientos', completed: false },
-            { id: 'g4', text: 'Tomar proteínas', completed: true },
-            { id: 'g5', text: 'Entreno de piernas', completed: false }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '2/5',
-            'Último treino': 'Pecho',
-            'Progreso': '45%'
+            'Tareas completadas': '0/0',
+            'Último treino': 'Sin datos',
+            'Progreso': '0%'
         }
     },
     familia: {
         title: 'Familia',
         icon: 'fa-users',
-        tasks: [
-            { id: 'f1', text: 'Llamar a los padres', completed: true },
-            { id: 'f2', text: 'Visitar a los abuelos', completed: false },
-            { id: 'f3', text: 'Cenar en familia', completed: true },
-            { id: 'f4', text: 'Organizar reunión familiar', completed: false },
-            { id: 'f5', text: 'Regalar presente', completed: false }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '2/5',
-            'Último encuentro': 'Cena familiar',
-            'Conexión familiar': '80%'
+            'Tareas completadas': '0/0',
+            'Último encuentro': 'Sin datos',
+            'Conexión familiar': '0%'
         }
     },
     bancos: {
         title: 'Bancos',
         icon: 'fa-university',
-        tasks: [
-            { id: 'b1', text: 'Revisar cuenta', completed: true },
-            { id: 'b2', text: 'Pagar tarjeta', completed: false },
-            { id: 'b3', text: 'Transferencia', completed: true },
-            { id: 'b4', text: 'Invertir dinero', completed: false },
-            { id: 'b5', text: 'Actualizar app banco', completed: false }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '2/5',
-            'Próximo pago': 'Tarjeta crédito',
-            'Salud financiera': '70%'
+            'Tareas completadas': '0/0',
+            'Próximo pago': 'Sin datos',
+            'Salud financiera': '0%'
         }
     },
     devs: {
         title: 'Devs',
         icon: 'fa-code',
-        tasks: [
-            { id: 'd1', text: 'Commit código', completed: true },
-            { id: 'd2', text: 'Revisar PRs', completed: false },
-            { id: 'd3', text: 'Actualizar dependencias', completed: true },
-            { id: 'd4', text: 'Hacer backup', completed: false },
-            { id: 'd5', text: 'Aprender nueva tecnología', completed: false }
-        ],
+        tasks: [],
         stats: {
-            'Tareas completadas': '2/5',
-            'Último commit': 'Hoy',
-            'Productividad': '65%'
+            'Tareas completadas': '0/0',
+            'Último commit': 'Sin datos',
+            'Productividad': '0%'
         }
     }
 };
 
 let currentCategory = null;
+let currentSubcategory = null;
 
 const panelTitle = document.getElementById('panelTitle');
 const panelIcon = document.getElementById('panelIcon');
 const panelContent = document.getElementById('panelContent');
 const contentPanel = document.getElementById('contentPanel');
+const addTaskForm = document.getElementById('addTaskForm');
+const newTaskInput = document.getElementById('newTaskInput');
+
+addTaskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = newTaskInput.value.trim();
+    if (text && currentCategory) {
+        await saveTask(currentCategory, currentSubcategory, text);
+        newTaskInput.value = '';
+    }
+});
 
 document.querySelectorAll('.life-card').forEach(card => {
     card.addEventListener('click', () => {
         const category = card.dataset.category;
+        currentSubcategory = null;
         showPanel(category);
     });
 });
@@ -232,6 +181,9 @@ function showPanel(category) {
                             <i class="fas fa-check"></i>
                         </div>
                         <span class="task-text">${task.text}</span>
+                        <button class="task-delete" onclick="deleteTask(${task.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 `).join('');
 
@@ -266,6 +218,7 @@ function showPanel(category) {
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 btn.classList.add('active');
                 document.querySelector(`.tab-content[data-tab="${btn.dataset.tab}"]`).classList.add('active');
+                currentSubcategory = btn.dataset.tab;
             });
         });
     } else {
@@ -275,6 +228,9 @@ function showPanel(category) {
                     <i class="fas fa-check"></i>
                 </div>
                 <span class="task-text">${task.text}</span>
+                <button class="task-delete" onclick="deleteTask(${task.id})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
         `).join('');
 
@@ -325,9 +281,105 @@ function toggleTask(taskId) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadAllData();
     showPanel('casa');
 });
+
+async function loadAllData() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        
+        Object.keys(categories).forEach(category => {
+            const catData = categories[category];
+            if (catData.tabs) {
+                Object.keys(catData).forEach(subKey => {
+                    if (subKey !== 'title' && subKey !== 'icon' && subKey !== 'tabs') {
+                        const subCat = catData[subKey];
+                        subCat.tasks = data
+                            .filter(t => t.category === category && t.subcategory === subKey)
+                            .map(t => ({ id: t.id, text: t.text, completed: t.completed === 1 }));
+                        updateStats(subCat);
+                    }
+                });
+            } else {
+                catData.tasks = data
+                    .filter(t => t.category === category)
+                    .map(t => ({ id: t.id, text: t.text, completed: t.completed === 1 }));
+                updateStats(catData);
+            }
+        });
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+function updateStats(data) {
+    const total = data.tasks.length;
+    const completed = data.tasks.filter(t => t.completed).length;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+    
+    const statsKeys = Object.keys(data.stats);
+    data.stats[statsKeys[0]] = `${completed}/${total}`;
+    data.stats[statsKeys[2]] = `${percentage}%`;
+    
+    const pending = data.tasks.find(t => !t.completed);
+    if (pending) {
+        data.stats[statsKeys[1]] = pending.text.substring(0, 20);
+    }
+}
+
+async function saveTask(category, subcategory, text) {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ category, subcategory, text })
+        });
+        await loadAllData();
+        if (currentCategory) showPanel(currentCategory);
+    } catch (error) {
+        console.error('Error saving task:', error);
+    }
+}
+
+async function toggleTask(taskId) {
+    const data = categories[currentCategory];
+    let task = null;
+    
+    if (data.tabs && currentSubcategory) {
+        const found = data[currentSubcategory].tasks.find(t => t.id === taskId);
+        if (found) task = found;
+    } else if (!data.tabs) {
+        task = data.tasks.find(t => t.id === taskId);
+    }
+    
+    if (task) {
+        task.completed = !task.completed;
+        try {
+            await fetch(`${API_URL}/${taskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ completed: task.completed })
+            });
+            showPanel(currentCategory);
+        } catch (error) {
+            console.error('Error updating task:', error);
+            task.completed = !task.completed;
+        }
+    }
+}
+
+async function deleteTask(taskId) {
+    try {
+        await fetch(`${API_URL}/${taskId}`, { method: 'DELETE' });
+        await loadAllData();
+        if (currentCategory) showPanel(currentCategory);
+    } catch (error) {
+        console.error('Error deleting task:', error);
+    }
+}
 
 function openInfoPage(category, subcategory = null) {
     const params = new URLSearchParams();

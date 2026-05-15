@@ -198,6 +198,24 @@ const categories = {
             'Tareas completadas': '0/0',
             'Próximo deber': 'Sin tareas',
             'Nivel orden': '0%'
+        },
+        houseInfo: {
+            contractFile: null,
+            address: 'Calle Ficticia 123, Madrid',
+            price: '850€/mes',
+            owner: {
+                name: 'Juan Pérez',
+                phone: '612 345 678'
+            },
+            agency: {
+                name: 'Inmobiliaria XYZ',
+                phone: '910 123 456'
+            },
+            utilities: {
+                light: { contract: 'Contrato activo', file: null },
+                water: { contract: 'Contrato activo', file: null },
+                internet: { contract: 'Fibra 300Mbps', file: null }
+            }
         }
     },
     vehiculo: {
@@ -410,6 +428,102 @@ function showPanel(category) {
                 currentSubcategory = btn.dataset.tab;
             });
         });
+    } else if (category === 'casa' && data.houseInfo) {
+        const house = data.houseInfo;
+        
+        let houseInfoHTML = `
+            <div class="house-info-section">
+                <h3><i class="fas fa-file-signature"></i> Contrato de Alquiler</h3>
+                <div class="contract-row">
+                    <span class="contract-label">${house.contractFile ? house.contractFile.name : 'Sin archivo'}</span>
+                    <button class="upload-btn" onclick="document.getElementById('contractFileInput').click()">
+                        <i class="fas fa-upload"></i> Subir
+                    </button>
+                    <input type="file" id="contractFileInput" style="display:none" accept="*/*" onchange="handleContractUpload(this)">
+                </div>
+            </div>
+            
+            <div class="house-info-section">
+                <h3><i class="fas fa-home"></i> Datos de la Casa</h3>
+                <div class="house-detail">
+                    <span class="house-detail-label">Dirección</span>
+                    <span class="house-detail-value">${house.address}</span>
+                </div>
+                <div class="house-detail">
+                    <span class="house-detail-label">Precio</span>
+                    <span class="house-detail-value">${house.price}</span>
+                </div>
+            </div>
+            
+            <div class="house-info-section">
+                <h3><i class="fas fa-user"></i> Propietario</h3>
+                <div class="house-detail">
+                    <span class="house-detail-label">Nombre</span>
+                    <span class="house-detail-value">${house.owner.name}</span>
+                </div>
+                <div class="house-detail">
+                    <span class="house-detail-label">Teléfono</span>
+                    <span class="house-detail-value">${house.owner.phone}</span>
+                </div>
+            </div>
+            
+            <div class="house-info-section">
+                <h3><i class="fas fa-building"></i> Inmobiliaria</h3>
+                <div class="house-detail">
+                    <span class="house-detail-label">Nombre</span>
+                    <span class="house-detail-value">${house.agency.name}</span>
+                </div>
+                <div class="house-detail">
+                    <span class="house-detail-label">Teléfono</span>
+                    <span class="house-detail-value">${house.agency.phone}</span>
+                </div>
+            </div>
+            
+            <div class="house-info-section">
+                <h3><i class="fas fa-plug"></i> Servicios</h3>
+                
+                <div class="utility-section">
+                    <h4><i class="fas fa-bolt"></i> Luz</h4>
+                    <div class="utility-item">
+                        <span class="utility-name">
+                            <i class="fas fa-file-contract"></i> ${house.utilities.light.contract}
+                        </span>
+                        <button class="upload-btn" onclick="document.getElementById('lightFileInput').click()">
+                            <i class="fas fa-upload"></i> Subir
+                        </button>
+                        <input type="file" id="lightFileInput" style="display:none" accept="*/*" onchange="handleUtilityUpload('light', this)">
+                    </div>
+                </div>
+                
+                <div class="utility-section">
+                    <h4><i class="fas fa-tint"></i> Agua</h4>
+                    <div class="utility-item">
+                        <span class="utility-name">
+                            <i class="fas fa-file-contract"></i> ${house.utilities.water.contract}
+                        </span>
+                        <button class="upload-btn" onclick="document.getElementById('waterFileInput').click()">
+                            <i class="fas fa-upload"></i> Subir
+                        </button>
+                        <input type="file" id="waterFileInput" style="display:none" accept="*/*" onchange="handleUtilityUpload('water', this)">
+                    </div>
+                </div>
+                
+                <div class="utility-section">
+                    <h4><i class="fas fa-wifi"></i> Internet</h4>
+                    <div class="utility-item">
+                        <span class="utility-name">
+                            <i class="fas fa-file-contract"></i> ${house.utilities.internet.contract}
+                        </span>
+                        <button class="upload-btn" onclick="document.getElementById('internetFileInput').click()">
+                            <i class="fas fa-upload"></i> Subir
+                        </button>
+                        <input type="file" id="internetFileInput" style="display:none" accept="*/*" onchange="handleUtilityUpload('internet', this)">
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        panelContent.innerHTML = houseInfoHTML;
     } else {
         let tasksHTML = data.tasks.map(task => `
             <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
@@ -575,4 +689,29 @@ function openInfoPage(category, subcategory = null) {
     params.set('category', category);
     if (subcategory) params.set('subcategory', subcategory);
     window.location.href = 'info.html?' + params.toString();
+}
+
+/**
+ * Maneja la subida del contrato de alquiler.
+ * @param {HTMLInputElement} input - Elemento input de archivo
+ */
+function handleContractUpload(input) {
+    if (input.files.length) {
+        const file = input.files[0];
+        categories.casa.houseInfo.contractFile = file;
+        showPanel('casa');
+    }
+}
+
+/**
+ * Maneja la subida de documentos de servicios (luz, agua, internet).
+ * @param {string} type - Tipo de servicio ('light', 'water', 'internet')
+ * @param {HTMLInputElement} input - Elemento input de archivo
+ */
+function handleUtilityUpload(type, input) {
+    if (input.files.length) {
+        const file = input.files[0];
+        categories.casa.houseInfo.utilities[type].file = file;
+        showPanel('casa');
+    }
 }
